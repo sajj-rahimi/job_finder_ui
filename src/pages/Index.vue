@@ -142,6 +142,7 @@
           class="col-md-4 align-stretch"
           color="primary"
           label="جستجو در مشاغل"
+          @click="filterJob"
         />
       </div>
     </div>
@@ -339,6 +340,16 @@ export default {
     this.getLastAdvs();
   },
   methods: {
+    filterJob() {
+      let url = "";
+      Object.entries(this.form).forEach((el) => {
+        url += "&?";
+        url += toString(el[0]);
+        url += toString(el[1]);
+      });
+      url = "/filterjobs" + url.substring(1);
+      this.$router.push({ name: "advertisements", params: url });
+    },
     getLastAdvs() {
       this.loading = true;
       this.$api
@@ -348,6 +359,18 @@ export default {
         })
         .then((res) => {
           this.tableRows = res;
+          this.tableRows["contract"] =
+            res["contract"] == 0
+              ? "ریموت"
+              : res["type"] == 1
+              ? "پاره وقت"
+              : "تمام وقت";
+          this.tableRows["type"] =
+            res["type"] == 0
+              ? "کارآموز"
+              : res["type"] == 1
+              ? "جونیور"
+              : "سنیور";
           this.loading = false;
         });
     },
