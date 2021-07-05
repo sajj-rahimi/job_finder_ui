@@ -1,30 +1,23 @@
 import { api } from "src/boot/axios"
+import {state} from './state'
+function setToken( payload) {
+  settings.set('token', payload)
+ 
+}
   export function signIn(ctx , payload){
-     api.post('/login' , payload).then((response)=>{
-        console.log(response)
-    })
+     return api.post('/login' , payload)
+    }
+    export function setUser(ctx,payload){
+      this.state.user.name = payload.name || ''
+      this.state.user.id = payload.id || ''
+      this.state.user.isLogged = true
+      setToken(payload.token)
     }
     export function signup(ctx , payload){
       console.log(payload)
-      api.post('/register' , payload).then((response)=>{
-         console.log(response)
-     })
+      return api.post('/register' , payload)
      }
-  //   export function signun(ctx , payload){
-  //     this.$axios.post('/signup' , payload).then((response)=>{
-  //        console.log(response)
-  //    })
-  //    }
-  // export function setToken(context, payload) {
-  //   payload = {
-  //     accessToken: '',
-  //     refreshToken: '',
-  //     ...payload
-  //   }
-  //   settings.set('token', payload.accessToken)
-  //   settings.set('token_expire', new Date().getTime() + 24 * 3600 * 1000)
-  //   settings.set('token_refresh', payload.refreshToken)
-  // }
+   
   // export function getToken({ dispatch }) {
   //   return new Promise((resolve, reject) => {
   //     let token = settings.get('token')

@@ -132,10 +132,15 @@ export default {
       this.state = state;
     },
     loginSubmit() {
-      this.$store.dispatch("index/signIn", this.loginForm).then((res) => {
-        console.log(res);
-        //setToken , push router
-      });
+      this.$store
+        .dispatch("index/signIn", JSON.stringify(this.loginForm))
+        .then((res) => {
+          res.text();
+        })
+        .then((res) => {
+          this.$store.dispatch("index/setUser", res);
+          this.$router.go(-1);
+        });
     },
     signupSubmit(form) {
       this.$store

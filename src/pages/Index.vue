@@ -15,26 +15,47 @@
         "
         style="direction: rtl"
       >
-        <q-input
-          bg-color="white"
-          class="col-md-4 q-pl-md"
-          :input-style="{ direction: 'rtl' }"
-          color="primary"
-          filled
-          outlined
-          v-model="form.title"
-          placeholder="جستجو در عنوان آگهی"
-        >
-          <template v-slot:prepend>
-            <q-icon name="search" class="q-pl-md" />
-          </template>
-        </q-input>
         <q-select
           bg-color="white"
           color="primary"
-          class="col-md-6 q-pl-md"
+          class="col-md-3 q-pl-md"
           filled
           bottom-slots
+          map-options
+          emit-value
+          option-value="value"
+          option-label="label"
+          v-model="form.province"
+          placeholder="دسته بندی مشاغل"
+          :options="jobs"
+        >
+          <template v-slot:prepend>
+            <q-icon name="menu" class="q-pl-md" @click.stop />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              name="close"
+              @click.stop="form.job = ''"
+              class="cursor-pointer"
+            />
+          </template>
+          <template v-slot:selected>
+            <template v-if="form.job">
+              {{ form.job }}
+            </template>
+            <template v-else> دسته بندی مشاغل </template>
+          </template>
+        </q-select>
+        <q-select
+          bg-color="white"
+          color="primary"
+          class="col-md-3 q-pl-md"
+          filled
+          bottom-slots
+          map-options
+          emit-value
+          option-value="value"
+          option-label="label"
           v-model="form.province"
           placeholder="انتخاب استان"
           :options="provinces"
@@ -56,13 +77,86 @@
             <template v-else> انتخاب استان </template>
           </template>
         </q-select>
+        <q-select
+          bg-color="white"
+          color="primary"
+          class="col-md-3 q-pl-md"
+          filled
+          bottom-slots
+          map-options
+          emit-value
+          option-value="value"
+          option-label="label"
+          v-model="form.jobType"
+          placeholder="نوع استخدام"
+          :options="jobTypes"
+        >
+          <template v-slot:prepend>
+            <q-icon name="menu" class="q-pl-md" @click.stop />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              name="close"
+              @click.stop="form.jobType = ''"
+              class="cursor-pointer"
+            />
+          </template>
+          <template v-slot:selected>
+            <template v-if="form.jobType">
+              {{ form.jobType }}
+            </template>
+            <template v-else> انتخاب نوع استخدام </template>
+          </template>
+        </q-select>
+        <q-select
+          bg-color="white"
+          color="primary"
+          class="col-md-3 q-pl-md"
+          filled
+          bottom-slots
+          option-value="value"
+          option-label="label"
+          v-model="form.contract"
+          placeholder="نوع همکاری"
+          :options="contracts"
+        >
+          <template v-slot:prepend>
+            <q-icon name="menu" class="q-pl-md" @click.stop />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              name="close"
+              @click.stop="form.contract = ''"
+              class="cursor-pointer"
+            />
+          </template>
+          <template v-slot:selected>
+            <template v-if="form.contract">
+              {{ form.contract }}
+            </template>
+            <template v-else> انتخاب نوع همکاری </template>
+          </template>
+        </q-select>
         <q-btn
           size="1.34rem"
-          class="col-md-2 align-stretch"
+          class="col-md-4 align-stretch"
           color="primary"
-          label="جستجو"
+          label="جستجو در مشاغل"
         />
       </div>
+    </div>
+    <div class="q-pa-md" style="margin-top: 20rem; width: 90%">
+      <q-table
+        title="آخرین آگهی‌ها"
+        :rows="rows"
+        :columns="columns"
+        row-key="name"
+        :table-header-style="{ backgroundColor: '#edfcff' }"
+        @row-click="onRowClick"
+        hide-pagination
+        :loading="loading"
+      >
+      </q-table>
     </div>
     <div
       class="row wrap justify-around items-start content-stretch"
@@ -72,8 +166,8 @@
         <q-card-section>
           <q-icon name="style" class="q-pl-md" style="font-size: 4rem" />
 
-          <div class="text-h6">Our Changing Planet</div>
-          <div class="text-subtitle2">by John Doe</div>
+          <div class="text-h6">کاریابی</div>
+          <div class="text-subtitle2">فرصت های شغلی برای نیروهای متخصصص</div>
         </q-card-section>
 
         <q-separator inset />
@@ -87,8 +181,10 @@
       <q-card bordered class="col-md-3 bg-white-8 my-card">
         <q-card-section>
           <q-icon name="style" class="q-pl-md" style="font-size: 4rem" />
-          <div class="text-h6">Our Changing Planet</div>
-          <div class="text-subtitle2">by John Doe</div>
+          <div class="text-h6">بارگذاری آگهی های توسط کارفرماها</div>
+          <div class="text-subtitle2">
+            یافتن نیروهای متخصص موردنظر کارفرماها
+          </div>
         </q-card-section>
 
         <q-separator inset />
@@ -103,8 +199,10 @@
         <q-card-section>
           <q-icon name="style" class="q-pl-md" style="font-size: 4rem" />
 
-          <div class="text-h6">Our Changing Planet</div>
-          <div class="text-subtitle2">by John Doe</div>
+          <div class="text-h6">رزومه ساز آنلاین</div>
+          <div class="text-subtitle2">
+            رزومه خود را بسازید و برای شرکت ها بفرستید
+          </div>
         </q-card-section>
 
         <q-separator inset />
@@ -116,17 +214,19 @@
         </q-card-section>
       </q-card>
     </div>
-    <div>
-      <div class="q-pa-md" style="margin-top: 5rem">
-        <q-table
-          title="آخرین آگهی‌ها"
-          :rows="rows"
-          :columns="columns"
-          row-key="name"
-          :table-style="{ backgroundColor: '#edfcff' }"
-          @row-click="onRowClick"
-        />
-      </div>
+
+    <div class="q-pa-md" style="margin-top: 5rem; width: 90%">
+      <q-table
+        grid
+        hide-header
+        title="برترین شرکت‌ها"
+        :rows="compRows"
+        :columns="columns"
+        row-key="name"
+        :table-header-style="{ backgroundColor: '#edfcff' }"
+        @row-click="onRowClick"
+        hide-pagination
+      />
     </div>
   </q-page>
 </template>
@@ -173,39 +273,118 @@ const columns = [
     field: "desc",
   },
 ];
-
-const rows = [
+const compColumns = [
   {
-    title: "Frozen Yogurt",
-    price: 159,
-    category: 6.0,
-    company: 24,
-    type: 4.0,
-    desc: 87,
-    location: { component: essentialLinks },
+    name: "name",
+    required: true,
+    label: "نام شرکت",
+    align: "center",
+    field: (row) => row.title || "نامشخص",
+    format: (val) => `${val}`,
   },
+  {
+    name: "amount",
+    align: "center",
+    label: "تعداد استخدامی",
+    field: "amount",
+  },
+  {
+    name: "category",
+    align: "center",
+    label: "رشته",
+    field: "category",
+  },
+  { name: "location", label: "استان", align: "center", field: "location" },
 ];
+
+// const rows = [
+//   {
+//     title: "Frozen Yogurt",
+//     price: 159,
+//     category: 6.0,
+//     company: 24,
+//     type: 4.0,
+//     desc: 87,
+//     location: { component: essentialLinks },
+//   },
+//   {
+//     title: "Frozen Yogurt",
+//     price: 159,
+//     category: 6.0,
+//     company: 24,
+//     type: 4.0,
+//     desc: 87,
+//     location: { component: essentialLinks },
+//   },
+// ];
 import essentialLinks from "components/EssentialLink.vue";
 export default {
   name: "PageIndex",
-  // computed: {
-  //   rows() {},
-  // },
+  computed: {
+    rows() {
+      return this.tableRows;
+    },
+    cRows() {
+      return this.compRows;
+    },
+  },
+  watch: {
+    form: {
+      handler(val) {
+        console.log(val);
+      },
+    },
+  },
+  created() {
+    this.getLastAdvs();
+  },
   methods: {
+    getLastAdvs() {
+      this.loading = true;
+      this.$api
+        .get("/getLatestJobs")
+        .then((res) => {
+          res.text();
+        })
+        .then((res) => {
+          this.tableRows = res;
+          this.loading = false;
+        });
+    },
+    getComps() {
+      this.loading = true;
+      this.$api
+        .get("/getLatestCompanies")
+        .then((res) => {
+          res.text();
+        })
+        .then((res) => {
+          this.compRows = res;
+          this.loading = false;
+        });
+    },
     onRowClick(evt, row) {
-      console.log("clicked on", row);
+      this.$router.push({ name: "advertisement", params: { ...row } });
     },
   },
   data() {
     return {
+      loading: false,
       columns,
-      rows,
+      compRows: [],
+      tableRows: [],
       form: {
         title: "",
         province: "",
+        job: "",
+        jobType: "",
+        contract: "",
       },
+      contracts: ["ریموت", "تمام وقت", "پاره وقت"],
+      jobTypes: ["کارآموز", "جونیور", "سنیور"],
+      jobs: [],
       provinces: [
-        { label: "تهران", value: "نهران" },
+        "تهران",
         "گیلان",
         "آذربایجان شرقی",
         "خوزستان",

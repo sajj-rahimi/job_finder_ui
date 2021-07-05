@@ -2,8 +2,7 @@ import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 import settings from '../modules/settings'
 const token = settings.get('token')
-// token ? axios.defaults.headers.common['Authorization'] = token : 
-axios.defaults.headers.common['Accept'] = 'application/json';
+ token ? axios.defaults.headers.common['Authorization'] = token : axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;

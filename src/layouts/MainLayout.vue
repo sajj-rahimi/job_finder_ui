@@ -6,9 +6,6 @@
           >صفحه اصلی</router-link
         >
         <router-link to="/advertisings" class="nav-item">آگهی ها</router-link>
-        <router-link to="/companies" class="nav-item">
-          شرکت های عضو مجموعه</router-link
-        >
         <template v-if="$route.name !== 'login'">
           <q-chip class="login-part" v-if="currentUser.islLogged">
             <q-avatar class="left-aligned">
@@ -100,18 +97,11 @@ export default defineComponent({
   name: "MainLayout",
 
   components: {},
-  created() {
-    console.log();
-  },
+  created() {},
   computed: {
     currentUser() {
       return this.$store.getters["index/getUser"];
     },
-  },
-  data() {
-    return {
-      essentialLinks: linksList,
-    };
   },
 });
 </script>
